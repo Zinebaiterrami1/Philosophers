@@ -1,0 +1,77 @@
+✅ That’s actually the best approach: learn in small, clear steps.
+
+Here’s a step-by-step plan for you to practice:
+
+📋 Step 1: Practice Threads Only
+Goal: Learn how to create and join threads.
+
+🧵 Mini-Exercise 1: Hello from Threads
+Create a program that spawns 5 threads.
+
+Each thread prints:
+
+
+Hello from thread X
+where X is the thread number. //passed
+
+✅ Functions to use:
+
+pthread_create
+
+pthread_join
+
+📋 Step 2: Practice Mutex Only
+Goal: Learn how to lock and unlock a mutex.
+
+🔐 Mini-Exercise 2: Protect a Counter
+Shared variable: int counter = 0;
+
+Create a mutex and manually try:
+
+pthread_mutex_lock(&mutex);
+counter++;
+pthread_mutex_unlock(&mutex);
+Try locking/unlocking without threads just to see how it works.
+
+📋 Step 3: Combine Both: Threads + Mutex
+Goal: Multiple threads update the same variable safely.
+
+🧪 Mini-Exercise 3: Safe Increment
+Shared variable: int counter = 0;
+
+Create 5 threads, each increments the counter 1000 times.
+
+Use a mutex to protect counter.
+
+At the end, the result should be 5000.
+
+🧠 Notes:
+✅ Don’t forget to initialize the mutex:
+
+
+pthread_mutex_t mutex;
+pthread_mutex_init(&mutex, NULL);
+✅ And destroy it at the end:
+
+
+pthread_mutex_destroy(&mutex);
+🚀 Suggested Order:
+1️⃣ Write a program that creates threads.
+2️⃣ Write a program that locks/unlocks a mutex.
+3️⃣ Combine them into one: threads + mutex.
+
+If you want, just tell me:
+
+“Show me the code for step 1”
+and I can write a short, clean skeleton for you to start with!
+
+You’re doing great by taking it step by step. 🌟 Just say the word when you want to move on!
+
+
+
+
+
+
+
+
+Ask ChatGPT
