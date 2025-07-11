@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/08 19:13:30 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/11 16:00:52 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ typedef struct t_data
     int             num_of_philo;
     int             num_of_meals; //max_eat_time
 } g_data;
-
+/*
+You don’t need mutex_fork in each g_data.
+Instead, make one pthread_mutex_t *forks shared between all philosophers.
+*/
 typedef struct t_philo
 {
     pthread_t       philo;
