@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/11 16:00:52 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/13 17:16:11 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 typedef struct t_data
 {
     pthread_mutex_t *mutex_fork; 
+    pthread_mutex_t mutex_print;
     int             time_to_die;
     int             time_to_eat;
     int             time_to_sleep;
@@ -38,11 +40,18 @@ typedef struct t_philo
     int             philo_id;
     int             first;
     int             second;
+    long            last_meal;
     g_data          shared_data;
 } s_philo;
 
 int                     ft_atoi(const char *str);
 int                     ft_is_numeric(char *str);
 int                     parse_args(char **argv, int argc);
+void                    print_philo(s_philo *philo, char *msg);
+long                    get_current_time(void);
+void                    get_start_time(void);
+long                    *start_time(void);
+void                    ft_monitor(s_philo *philo);
+void                    *monitor(void *arg);
 
 #endif

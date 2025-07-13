@@ -1,10 +1,11 @@
 NAME = philo
 CC = cc 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
 
 SOURCES = philo.c\
 			philo_utils.c\
-			utils.c
+			utils.c\
+			monitor.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
