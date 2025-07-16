@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/15 13:32:42 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/16 11:33:52 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,38 +23,53 @@ void *start_routine(void *arg)
     s_philo *philo_routine;
 
     philo_routine = (s_philo *)arg;
-    if(philo_routine->shared_data.num_of_philo == 1)
+    if(philo_routine->shared_data->num_of_philo == 1)
     {
         print_philo(philo_routine, "is thinking");
-        pthread_mutex_lock(&philo_routine->shared_data.mutex_fork[philo_routine->first]);;
+        pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);;
         print_philo(philo_routine, "has taken a fork");
-        pthread_mutex_lock(&philo_routine->shared_data.meal_mutex);
+        pthread_mutex_lock(&philo_routine->shared_data->meal_mutex);
         philo_routine->last_meal = get_current_time();
-        pthread_mutex_unlock(&philo_routine->shared_data.meal_mutex);
+        pthread_mutex_unlock(&philo_routine->shared_data->meal_mutex);
     }
     while(1)
     {
-        if(philo_routine->shared_data.stop_simulation)
+        pthread_mutex_lock(&philo_routine->shared_data->stop_mutex);
+        if(philo_routine->shared_data->stop_simulation)
         {
-            pthread_mutex_unlock(&philo_routine->shared_data.stop_mutex);
+            pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
             return (NULL);
         }
-        pthread_mutex_unlock(&philo_routine->shared_data.stop_mutex);
+        pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
+
         print_philo(philo_routine, "is thinking");
-        pthread_mutex_lock(&philo_routine->shared_data.mutex_fork[philo_routine->first]);;
-        print_philo(philo_routine, "has taken a fork");
-        pthread_mutex_lock(&philo_routine->shared_data.mutex_fork[philo_routine->second]);
-        print_philo(philo_routine, "has taken a fork");
-        pthread_mutex_lock(&philo_routine->shared_data.meal_mutex);
+        if(philo_routine->philo_id % 2 == 0)
+        {
+            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);;
+            print_philo(philo_routine, "has taken a fork");
+            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
+            print_philo(philo_routine, "has taken a fork");
+        }
+        else
+        {
+            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);;
+            print_philo(philo_routine, "has taken a fork");
+            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+            print_philo(philo_routine, "has taken a fork");
+        }
+        
+        pthread_mutex_lock(&philo_routine->shared_data->meal_mutex);
         philo_routine->last_meal = get_current_time();
-        pthread_mutex_unlock(&philo_routine->shared_data.meal_mutex);
+        pthread_mutex_unlock(&philo_routine->shared_data->meal_mutex);
+
         print_philo(philo_routine, "is eating");
-        usleep(philo_routine->shared_data.time_to_eat * 1000);
-        pthread_mutex_unlock(&philo_routine->shared_data.mutex_fork[philo_routine->first]);
-        pthread_mutex_unlock(&philo_routine->shared_data.mutex_fork[philo_routine->second]);
-        print_philo(philo_routine, "is sleepin");
-        usleep(philo_routine->shared_data.time_to_sleep * 1000);
-        pthread_mutex_lock(&philo_routine->shared_data.stop_mutex);
+        usleep(philo_routine->shared_data->time_to_eat * 1000);
+        
+        pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+        pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
+        
+        print_philo(philo_routine, "is sleeping");
+        usleep(philo_routine->shared_data->time_to_sleep * 1000);
     }
     return (NULL);
 }
@@ -81,29 +96,33 @@ s_philo *init_philo(char **av)
     s_philo *philo;
     int i;
     int num;
+    g_data *data;
     
     num = ft_atoi(av[1]);
     i = 0;
-    philo = malloc(sizeof(s_philo) * num);
-    while(i < num)
+    data = malloc(sizeof(g_data));
+    data->num_of_philo = ft_atoi(av[1]);
+    data->time_to_die = ft_atoi(av[2]);
+    data->time_to_eat = ft_atoi(av[3]);
+    data->time_to_sleep = ft_atoi(av[4]);
+    data->stop_simulation = 0;
+    if(av[5])
+        data->num_of_meals = ft_atoi(av[5]);
+    else
+        data->num_of_meals = -1;
+    data->mutex_fork = init_forks(data->num_of_philo);
+    pthread_mutex_init(&data->meal_mutex, NULL);
+    pthread_mutex_init(&data->stop_mutex, NULL);
+    pthread_mutex_init(&data->mutex_print, NULL);
+    philo = malloc(sizeof(s_philo) * data->num_of_philo);
+    while(i < data->num_of_philo)
     {
         philo[i].philo_id = i;
-        philo[i].shared_data.num_of_philo = num;
-        philo[i].shared_data.time_to_die = ft_atoi(av[2]);
-        philo[i].shared_data.time_to_eat = ft_atoi(av[3]);
-        philo[i].shared_data.time_to_sleep = ft_atoi(av[4]);
-        philo[i].shared_data.mutex_fork = init_forks(num);
-        philo[i].shared_data.stop_simulation = 0;
-        pthread_mutex_init(&philo[i].shared_data.mutex_print, NULL);
-        pthread_mutex_init(&philo[i].shared_data.meal_mutex, NULL);
-        pthread_mutex_init(&philo[i].shared_data.stop_mutex, NULL);
         philo[i].first = i;
-        philo[i].second = (i + 1) % num;
+        philo[i].second = (i + 1) % data->num_of_philo;
         philo[i].last_meal = get_current_time();
-        if(av[5])
-            philo[i].shared_data.num_of_meals = ft_atoi(av[5]);
-        else
-            philo[i].shared_data.num_of_meals = -1;
+        philo[i].shared_data = data;
+
         pthread_create(&philo[i].philo, NULL, start_routine, &philo[i]);
         i++;
     }
@@ -112,9 +131,15 @@ s_philo *init_philo(char **av)
 
 void print_philo(s_philo *philo, char *msg)
 {
-    pthread_mutex_lock(&philo->shared_data.mutex_print);
+    pthread_mutex_lock(&philo->shared_data->stop_mutex);
+    if (philo->shared_data->stop_simulation) {
+        pthread_mutex_unlock(&philo->shared_data->stop_mutex);
+        return;
+    }
+    pthread_mutex_unlock(&philo->shared_data->stop_mutex);
+    pthread_mutex_lock(&philo->shared_data->mutex_print);
     printf("%ld %d %s\n", get_current_time(),philo->philo_id, msg);
-    pthread_mutex_unlock(&philo->shared_data.mutex_print);
+    pthread_mutex_unlock(&philo->shared_data->mutex_print);
 }
 
 void get_start_time(void)
@@ -165,7 +190,7 @@ int main(int ac, char **av)
     }
     get_start_time();
     philo = init_philo(av);
-    num = philo[0].shared_data.num_of_philo;
+    num = philo[0].shared_data->num_of_philo;
     ft_monitor(philo);
     i = 0;
     while(i < num)
@@ -173,7 +198,7 @@ int main(int ac, char **av)
         pthread_join(philo[i].philo, NULL);
         i++;
     }
-    forks = philo[0].shared_data.mutex_fork;
+    forks = philo[0].shared_data->mutex_fork;
     i = 0;
     while(i < num)
     {
