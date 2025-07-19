@@ -32,6 +32,7 @@ typedef struct t_data
     int             num_of_philo;
     int             num_of_meals; //max_eat_time
     int             stop_simulation; //shared stop flag
+    int             finished_eating; //count of philos who finished eating
 } g_data;
 /*
 You don’t need mutex_fork in each g_data.
@@ -44,6 +45,7 @@ typedef struct t_philo
     int             first;
     int             second;
     long            last_meal;
+    int             meals_eaten; //count of meals eaten by this philo
     g_data          *shared_data;
 } s_philo;
 
@@ -56,5 +58,5 @@ void                    get_start_time(void);
 long                    *start_time(void);
 void                    ft_monitor(s_philo *philo);
 void                    *monitor(void *arg);
-
+int                      should_stop(s_philo *philo);
 #endif

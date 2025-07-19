@@ -18,6 +18,66 @@ long *start_time(void)
     static long start_time;
     return (&start_time);
 }
+int should_stop(s_philo *philo)
+{
+    int stop;
+
+    pthread_mutex_lock(&philo->shared_data->stop_mutex);
+    stop = philo->shared_data->stop_simulation;
+    pthread_mutex_unlock(&philo->shared_data->stop_mutex);
+    return (stop);
+}
+
+int take_forks(s_philo *philo)
+{
+    if(philo->philo_id % 2 == 0)
+    {
+        pthread_mutex_lock(&philo->shared_data->mutex_fork[philo->first]);
+        if(should_stop(philo))
+        {
+            pthread_mutex_unlock(&philo->shared_data->mutex_fork[philo->first]);
+            return (0);
+        }
+        print_philo(philo, "has taken a fork");
+
+        pthread_mutex_lock(&philo->shared_data->mutex_fork[philo->second]);
+        if(should_stop(philo))
+        {
+            pthread_mutex_unlock(&philo->shared_data->mutex_fork[second]);
+            pthread_mutex_unlock(&philo->shared_data->mutex_fork[first]);
+            return (0);
+        }
+        print_philo(philo, "has taken a fork");
+    }
+    else
+    {
+        pthread_mutex_lock(&philo->shared_data->mutex_fork[second]);
+        if(should_stop(philo))
+        {
+            pthread_mutex_unlock(&philo->shared_data->mutex_fork[philo->second]);
+            return (0);
+        }
+        print_philo(philo, "has taken a fork");
+
+        pthread_mutex_lock(&philo->shared_data->mutex_fork[philo->first]);
+        if(should_stop(philo))
+        {
+            pthread_mutex_unlock(&philo->shared_data->mutex_fork[philo->first]);
+            pthread_mutex_unlock(&philo->shared_data->mutex_fork[philo->second]);
+            return (0);
+        }
+        print_philo(philo, "has taken a fork");
+    }
+    return (1);
+}
+
+void release_forks(s_philo *philo)
+{
+    pthread_mutex_unlock(&philo->shared_data->mutex_fork[philo->first]);
+    pthread_mutex_unlock(&philo->shared_data->mutex_fork[philo->second]);
+}
+
+
 void *start_routine(void *arg)
 {
     s_philo *philo_routine;
@@ -95,16 +155,16 @@ s_philo *init_philo(char **av)
 {
     s_philo *philo;
     int i;
-    int num;
+    // int num;
     g_data *data;
     
-    num = ft_atoi(av[1]);
+    // num = ft_atoi(av[1]);
     i = 0;
     data = malloc(sizeof(g_data));
     data->num_of_philo = ft_atoi(av[1]);
-    data->time_to_die = ft_atoi(av[2]);
-    data->time_to_eat = ft_atoi(av[3]);
-    data->time_to_sleep = ft_atoi(av[4]);
+    data->time_to_die = ft_atoi(av[2]) * 1000;
+    data->time_to_eat = ft_atoi(av[3]) * 1000;
+    data->time_to_sleep = ft_atoi(av[4]) * 1000;
     data->stop_simulation = 0;
     if(av[5])
         data->num_of_meals = ft_atoi(av[5]);
