@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 15:20:28 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:26:51 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 16:37:27 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 void	single_philo(t_philo *philo_routine)
 {
 	print_philo(philo_routine, "is thinking");
-	pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+	pthread_mutex_lock(
+            &philo_routine->shared_data->mutex_fork[philo_routine->first]);
 	print_philo(philo_routine, "has taken a fork");
 	pthread_mutex_lock(&philo_routine->shared_data->stop_mutex);
 	if (philo_routine->shared_data->stop_simulation == 1)

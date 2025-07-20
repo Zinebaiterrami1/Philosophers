@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:23:07 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 16:40:31 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_data
 	int				stop_simulation;
 }					t_data;
 
-typedef struct s_philo
+typedef struct t_philo
 {
 	pthread_t		philo;
 	int				philo_id;

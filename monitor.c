@@ -6,20 +6,20 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:48:57 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:19:31 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 16:40:31 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	print_mentor(s_philo *philo, char *msg)
+void	print_mentor(t_philo *philo, char *msg)
 {
 	pthread_mutex_lock(&philo->shared_data->mutex_print);
 	printf("%ld %d %s\n", get_current_time(), philo->philo_id, msg);
 	pthread_mutex_unlock(&philo->shared_data->mutex_print);
 }
 
-static void	helper_monitor(int num, s_philo *philo)
+static void	helper_monitor(int num, t_philo *philo)
 {
 	long	meal;
 	int		i;
@@ -48,18 +48,18 @@ static void	helper_monitor(int num, s_philo *philo)
 
 void	*monitor(void *arg)
 {
-	s_philo	*philo;
+	t_philo	*philo;
 	int		num;
 	int		i;
 	long	meal;
 
 	i = 0;
-	philo = (s_philo *)arg;
+	philo = (t_philo *)arg;
 	num = philo->shared_data->num_of_philo;
 	helper_monitor(num, philo);
 }
 
-void	ft_monitor(s_philo *philo)
+void	ft_monitor(t_philo *philo)
 {
 	pthread_t	monitor_t;
 

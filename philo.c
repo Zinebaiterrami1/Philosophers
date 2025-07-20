@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:17:57 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 16:39:32 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ long	*start_time(void)
 
 void	*start_routine(void *arg)
 {
-	s_philo	*philo_routine;
+	t_philo	*philo_routine;
 
-	philo_routine = (s_philo *)arg;
+	philo_routine = (t_philo *)arg;
 	if (philo_routine->shared_data->num_of_philo == 1)
 		single_philo(philo_routine);
 	while (1)
@@ -57,7 +57,7 @@ long	get_current_time(void)
 	return (current_time);
 }
 
-static void	helper_main(int num, s_philo *philo, pthread_mutex_t *forks)
+static void	helper_main(int num, t_philo *philo, pthread_mutex_t *forks)
 {
 	int	i;
 
@@ -79,7 +79,7 @@ static void	helper_main(int num, s_philo *philo, pthread_mutex_t *forks)
 int	main(int ac, char **av)
 {
 	int				num;
-	s_philo			*philo;
+	t_philo			*philo;
 	pthread_mutex_t	*forks;
 	int				i;
 
