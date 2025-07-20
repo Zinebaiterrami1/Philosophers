@@ -6,11 +6,23 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:39:32 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 20:52:34 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void ft_usleep(unsigned int usec)
+{
+    long start_time;
+    long ms;
+
+    start_time = get_current_time();
+    usleep(usec * 0.7);
+    ms = usec/1000;
+    while (get_current_time() - start_time < ms)
+        usleep(100);
+}
 
 long	*start_time(void)
 {
@@ -25,9 +37,17 @@ void	*start_routine(void *arg)
 
 	philo_routine = (t_philo *)arg;
 	if (philo_routine->shared_data->num_of_philo == 1)
+	{
 		single_philo(philo_routine);
+		return NULL;
+	}
+	if (philo_routine->philo_id % 2 == 0)
+		ft_usleep(50* 1000);
 	while (1)
-		ft_philo_routine(philo_routine);
+	{
+		if(ft_philo_routine(philo_routine))
+			return (NULL);
+	}
 	return (NULL);
 }
 
@@ -57,7 +77,7 @@ long	get_current_time(void)
 	return (current_time);
 }
 
-static void	helper_main(int num, t_philo *philo, pthread_mutex_t *forks)
+static void	helper_main(t_philo *philo,int num)
 {
 	int	i;
 
@@ -67,22 +87,19 @@ static void	helper_main(int num, t_philo *philo, pthread_mutex_t *forks)
 		pthread_join(philo[i].philo, NULL);
 		i++;
 	}
-	forks = philo[0].shared_data->mutex_fork;
 	i = 0;
 	while (i < num)
 	{
-		pthread_mutex_destroy(&forks[i]);
+		pthread_mutex_destroy(&philo[i].shared_data->mutex_fork[i]);
 		i++;
 	}
 }
 
 int	main(int ac, char **av)
 {
-	int				num;
 	t_philo			*philo;
-	pthread_mutex_t	*forks;
 	int				i;
-
+	int num;
 	i = 0;
 	if (!parse_args(av, ac))
 	{
@@ -91,9 +108,8 @@ int	main(int ac, char **av)
 	}
 	get_start_time();
 	philo = init_philo(av);
-	num = philo[0].shared_data->num_of_philo;
 	ft_monitor(philo);
-	helper_main(num, philo, forks);
-	free(forks);
+	num = philo[0].shared_data->num_of_philo;
+	helper_main( philo,num);
 	free(philo);
 }

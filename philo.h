@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:40:31 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 20:44:38 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ pthread_mutex_t		*init_forks(int num);
 t_philo				*init_philo(char **av);
 void				print_philo(t_philo *philo, char *msg);
 void				single_philo(t_philo *philo_routine);
-void				stop_simulation(t_philo *philo_routine);
-void				ft_philo_routine(t_philo *philo_routine);
+int				stop_simulation(t_philo *philo_routine);
+int				ft_philo_routine(t_philo *philo_routine);
+void ft_usleep(unsigned int usec);
+
 #endif
