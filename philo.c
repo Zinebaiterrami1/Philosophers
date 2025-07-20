@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/16 11:33:52 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 14:45:38 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,56 +18,98 @@ long *start_time(void)
     static long start_time;
     return (&start_time);
 }
+
+
+// static void assign_forks(s_philo *philo)
+// {
+//     int philo_nbr;
+//     int i;
+
+//     philo_nbr = philo->shared_data->num_of_philo;
+//     i = 0;
+//     while (i < philo_nbr)
+//     {
+//         if (philo->philo_id % 2 == 0)
+//         {
+//             philo->first = i;
+//             if (philo->philo_id == philo_nbr)
+//                 philo->second = 0;
+//             else
+//                 philo->second = philo->philo_id;
+//         }
+//         else
+//         {
+//             philo->second = i;
+//             if (philo->philo_id == philo_nbr)
+//                 philo->first = 0;
+//             else
+//                 philo->first = philo->philo_id;
+//         }
+//         i++;
+//     }
+// }
+
 void *start_routine(void *arg)
 {
     s_philo *philo_routine;
-
+    
     philo_routine = (s_philo *)arg;
+    
     if(philo_routine->shared_data->num_of_philo == 1)
     {
         print_philo(philo_routine, "is thinking");
-        pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);;
+        pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
         print_philo(philo_routine, "has taken a fork");
-        pthread_mutex_lock(&philo_routine->shared_data->meal_mutex);
-        philo_routine->last_meal = get_current_time();
-        pthread_mutex_unlock(&philo_routine->shared_data->meal_mutex);
+        // usleep(philo_routine->shared_data->time_to_die * 1000);
+        pthread_mutex_lock(&philo_routine->shared_data->stop_mutex);
+        if(philo_routine->shared_data->stop_simulation == 1)
+        {
+            pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+            // printf("%ld %d %s", get_current_time(), philo_routine->philo_id, "is died\n");
+            pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
+            return NULL;
+        }
+        pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
+        pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+        // printf("%ld %d %s", get_current_time(), philo_routine->philo_id, "is died\n");
+        return NULL;
     }
     while(1)
     {
+        usleep(1000);
         pthread_mutex_lock(&philo_routine->shared_data->stop_mutex);
         if(philo_routine->shared_data->stop_simulation)
         {
             pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
+            // printf("dead");
             return (NULL);
         }
         pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
 
         print_philo(philo_routine, "is thinking");
-        if(philo_routine->philo_id % 2 == 0)
-        {
-            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);;
-            print_philo(philo_routine, "has taken a fork");
-            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
-            print_philo(philo_routine, "has taken a fork");
-        }
-        else
-        {
-            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);;
-            print_philo(philo_routine, "has taken a fork");
-            pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
-            print_philo(philo_routine, "has taken a fork");
-        }
-        
+        if (philo_routine->philo_id % 2) //odd
+            usleep(200);
+        pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+        print_philo(philo_routine, "has taken a fork");
+        pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
+        print_philo(philo_routine, "has taken a fork");
+        // } else {
+        //     pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
+        //     print_philo(philo_routine, "has taken a fork");
+        //     pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+        //     print_philo(philo_routine, "has taken a fork");
+        // }
+
         pthread_mutex_lock(&philo_routine->shared_data->meal_mutex);
         philo_routine->last_meal = get_current_time();
         pthread_mutex_unlock(&philo_routine->shared_data->meal_mutex);
-
         print_philo(philo_routine, "is eating");
+
         usleep(philo_routine->shared_data->time_to_eat * 1000);
         
         pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
         pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
-        
+
         print_philo(philo_routine, "is sleeping");
         usleep(philo_routine->shared_data->time_to_sleep * 1000);
     }
@@ -117,9 +159,17 @@ s_philo *init_philo(char **av)
     philo = malloc(sizeof(s_philo) * data->num_of_philo);
     while(i < data->num_of_philo)
     {
-        philo[i].philo_id = i;
-        philo[i].first = i;
-        philo[i].second = (i + 1) % data->num_of_philo;
+        philo[i].philo_id = i + 1;
+        if(philo[i].philo_id % 2 == 0) //eeven
+        {
+            philo[i].first = i;
+            philo[i].second = (i + 1) % data->num_of_philo;
+        }
+        else
+        {
+            philo[i].first = (i + 1) % data->num_of_philo;
+            philo[i].second = i;
+        }
         philo[i].last_meal = get_current_time();
         philo[i].shared_data = data;
 
@@ -152,7 +202,7 @@ void get_start_time(void)
         exit(EXIT_FAILURE);
     }
     *start_time() = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-    printf(" start time ============> %ld\n" ,*start_time());
+    // printf(" start time ============> %ld\n" ,*start_time());
 
     // return ((tv->tv_sec * 1000) + (tv->tv_usec / 1000));
     //get time of day

@@ -6,11 +6,18 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:48:57 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/16 11:33:27 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 13:36:26 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void print_mentor(s_philo *philo, char *msg)
+{
+    pthread_mutex_lock(&philo->shared_data->mutex_print);
+    printf("%ld %d %s\n", get_current_time(), philo->philo_id, msg);
+    pthread_mutex_unlock(&philo->shared_data->mutex_print);
+}
 
 void *monitor(void *arg)
 {
@@ -24,6 +31,9 @@ void *monitor(void *arg)
     num = philo->shared_data->num_of_philo;
     while(1)
     {
+        // pthread_mutex_lock(&philo->shared_data->stop_mutex);
+        // printf("--> simulation : %d\n", philo->shared_data->stop_simulation);
+        // pthread_mutex_unlock(&philo->shared_data->stop_mutex);
         i = 0;
         while(i < num)
         {
@@ -34,13 +44,15 @@ void *monitor(void *arg)
             {
                 pthread_mutex_lock(&philo[i].shared_data->stop_mutex);
                 philo[i].shared_data->stop_simulation = 1;
-                print_philo(&philo[i], "is died");
                 pthread_mutex_unlock(&philo[i].shared_data->stop_mutex);
+                print_mentor(&philo[i], "is died");
+                // printf("heeeeeeeeeree\n");
                 return (NULL);
             }
+            // pthread_mutex_unlock(&philo->shared_data->meal_mutex);
             i++;
         }
-        usleep(1000); // sleep 1ms to avoid busy loop
+        usleep(500); // sleep 1ms to avoid busy loop
     }
 }
 
