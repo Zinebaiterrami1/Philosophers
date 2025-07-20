@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/16 10:21:05 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/20 15:07:35 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,7 @@ void                    get_start_time(void);
 long                    *start_time(void);
 void                    ft_monitor(s_philo *philo);
 void                    *monitor(void *arg);
-
+void                    *start_routine(void *arg);
+pthread_mutex_t         *init_forks(int num);
+s_philo                 *init_philo(char **av);
 #endif
