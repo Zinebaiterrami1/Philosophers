@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:48:57 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 14:39:18 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:42:33 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	done_eating(int num, t_philo *philo)
 	}
 	return(1);
 }
-
 
 static void	helper_monitor(int num, t_philo *philo)
 {
