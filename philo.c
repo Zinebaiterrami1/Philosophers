@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 14:33:46 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:37:29 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	*start_routine(void *arg)
 	
 	if(philo_routine->shared_data->num_of_meals >= 0)
 	{
-		while(philo_routine->count_meals < philo_routine->shared_data->num_of_meals)
+		while(get_meal_count(philo_routine) < philo_routine->shared_data->num_of_meals)
 		{
 			if(ft_philo_routine(philo_routine))
 				return (NULL);	

@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:48:57 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 14:03:49 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:39:18 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	done_eating(int num, t_philo *philo)
 	i = 0;
 	while(i < num)
 	{
-		if(philo->count_meals < total_meals)
+		if(get_meal_count(philo) < total_meals)
 			return(0);
 		i++;
 	}
