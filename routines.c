@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 15:20:28 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 13:36:02 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 20:56:18 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,13 @@
 void	single_philo(t_philo *philo_routine)
 {
 	print_philo(philo_routine, "is thinking");
-	pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+	pthread_mutex_lock(&philo_routine
+		->shared_data
+		->mutex_fork[philo_routine->first]);
 	print_philo(philo_routine, "has taken a fork");
-	pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
+	pthread_mutex_unlock(&philo_routine
+		->shared_data
+		->mutex_fork[philo_routine->first]);
 	return ;
 }
 
@@ -27,34 +31,45 @@ int	stop_simulation(t_philo *philo_routine)
 	if (philo_routine->shared_data->stop_simulation)
 	{
 		pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
-		return 1;
+		return (1);
 	}
 	pthread_mutex_unlock(&philo_routine->shared_data->stop_mutex);
-	return 0;
+	return (0);
 }
 
-int  	ft_philo_routine(t_philo *philo_routine)
+static void	lock_forks(t_philo *philo_routine)
+{
+	pthread_mutex_lock(&philo_routine
+		->shared_data
+		->mutex_fork[philo_routine->first]);
+	print_philo(philo_routine, "has taken a fork");
+	pthread_mutex_lock(&philo_routine
+		->shared_data
+		->mutex_fork[philo_routine->second]);
+	print_philo(philo_routine, "has taken a fork");
+}
+
+int	ft_philo_routine(t_philo *philo_routine)
 {
 	usleep(500);
-	// usleep(1000);
-	if(stop_simulation(philo_routine))
-		return 1;
+	if (stop_simulation(philo_routine))
+		return (1);
 	print_philo(philo_routine, "is thinking");
 	if (philo_routine->philo_id % 2 == 0)
 		usleep(200);
-	pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
-	print_philo(philo_routine, "has taken a fork");
-	pthread_mutex_lock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
-	print_philo(philo_routine, "has taken a fork");
+	lock_forks(philo_routine);
 	pthread_mutex_lock(&philo_routine->shared_data->meal_mutex);
 	philo_routine->last_meal = get_current_time();
 	pthread_mutex_unlock(&philo_routine->shared_data->meal_mutex);
 	print_philo(philo_routine, "is eating");
 	ft_usleep(philo_routine->shared_data->time_to_eat);
-	pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->first]);
-	pthread_mutex_unlock(&philo_routine->shared_data->mutex_fork[philo_routine->second]);
+	pthread_mutex_unlock(&philo_routine
+		->shared_data
+		->mutex_fork[philo_routine->first]);
+	pthread_mutex_unlock(&philo_routine
+		->shared_data
+		->mutex_fork[philo_routine->second]);
 	print_philo(philo_routine, "is sleeping");
 	ft_usleep(philo_routine->shared_data->time_to_sleep);
-		return 0;
-
+	return (0);
 }

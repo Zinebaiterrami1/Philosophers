@@ -3,11 +3,11 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
 
 SOURCES = philo.c\
-			philo_utils.c\
 			utils.c\
 			monitor.c \
 			routines.c\
 			init.c\
+			utils1.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
