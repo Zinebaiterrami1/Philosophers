@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 20:52:36 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 21:52:48 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	inc_meal_count(t_philo *philo)
 	pthread_mutex_unlock(&philo->shared_data->count_mutex);
 }
 
-void	*check_meals(t_philo *philo_routine)
+int check_meals(t_philo *philo_routine)
 {
 	if (philo_routine->shared_data->num_of_meals >= 0)
 	{
@@ -37,11 +37,11 @@ void	*check_meals(t_philo *philo_routine)
 			< philo_routine->shared_data->num_of_meals)
 		{
 			if (ft_philo_routine(philo_routine))
-				return (NULL);
+				return (0);
 			inc_meal_count(philo_routine);
 		}
 	}
-	return (NULL);
+	return (1);
 }
 
 void	*start_routine(void *arg)
@@ -56,7 +56,8 @@ void	*start_routine(void *arg)
 		return (NULL);
 	}
 	usleep(500);
-	check_meals(philo_routine);
+	if(check_meals(philo_routine))	
+		return(NULL);
 	while (1)
 	{
 		if (ft_philo_routine(philo_routine))
