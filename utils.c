@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:06:59 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:39:53 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:43:32 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,9 @@ int	parse_args(char **argv, int argc)
 		if (!ft_is_numeric(argv[i]) || ft_atoi(argv[i]) <= 0
 			|| ft_atoi(argv[i]) > INT_MAX || (ft_atoi(argv[1]) > 200
 				&& ft_atoi(argv[1]) == 0) || ft_atoi(argv[2]) < 60
-			|| ft_atoi(argv[3]) < 60 || ft_atoi(argv[4]) < 60)
+			|| ft_atoi(argv[3]) < 60 || ft_atoi(argv[4]) < 60 ||
+			(ft_atoi(argv[5]) <= 0 
+				&& ft_atoi(argv[5]) > INT_MAX))
 			return (0);
 		i++;
 	}

@@ -6,21 +6,18 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:49 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 20:52:34 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:33:46 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void ft_usleep(unsigned int usec)
+void ft_usleep(int ms)
 {
     long start_time;
-    long ms;
 
     start_time = get_current_time();
-    usleep(usec * 0.7);
-    ms = usec/1000;
-    while (get_current_time() - start_time < ms)
+    while (get_current_time() - start_time < ms) 
         usleep(100);
 }
 
@@ -30,19 +27,45 @@ long	*start_time(void)
 
 	return (&start_time);
 }
+int	get_meal_count(t_philo *philo)
+{
+	int c; 
+	pthread_mutex_lock(&philo->shared_data->count_mutex);
+		c = philo->count_meals;
+	pthread_mutex_unlock(&philo->shared_data->count_mutex);
+	return(c);
+}
+
+void	inc_meal_count(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->shared_data->count_mutex);
+		philo->count_meals ++;
+	pthread_mutex_unlock(&philo->shared_data->count_mutex);
+}
 
 void	*start_routine(void *arg)
 {
 	t_philo	*philo_routine;
-
+	
 	philo_routine = (t_philo *)arg;
+	philo_routine->count_meals = 0;
 	if (philo_routine->shared_data->num_of_philo == 1)
 	{
 		single_philo(philo_routine);
 		return NULL;
 	}
-	if (philo_routine->philo_id % 2 == 0)
-		ft_usleep(50* 1000);
+	usleep(500);
+	
+	if(philo_routine->shared_data->num_of_meals >= 0)
+	{
+		while(philo_routine->count_meals < philo_routine->shared_data->num_of_meals)
+		{
+			if(ft_philo_routine(philo_routine))
+				return (NULL);	
+			inc_meal_count(philo_routine);
+		}
+	}
+	return(NULL);
 	while (1)
 	{
 		if(ft_philo_routine(philo_routine))

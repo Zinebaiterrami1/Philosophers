@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 15:06:13 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 16:25:08 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:19:11 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ t_philo	*init_philo(char **av)
 	pthread_mutex_init(&data->meal_mutex, NULL);
 	pthread_mutex_init(&data->stop_mutex, NULL);
 	pthread_mutex_init(&data->mutex_print, NULL);
+	pthread_mutex_init(&data->count_mutex, NULL);
 	philo = malloc(sizeof(t_philo) * data->num_of_philo);
 	assign_forks(data, philo, i);
 	return (philo);

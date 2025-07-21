@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 20:44:38 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:18:59 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_data
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	meal_mutex;
 	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t count_mutex;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
@@ -41,6 +42,7 @@ typedef struct t_philo
 	int				philo_id;
 	int				first;
 	int				second;
+	int 			count_meals;
 	long			last_meal;
 	t_data			*shared_data;
 }					t_philo;
@@ -61,6 +63,6 @@ void				print_philo(t_philo *philo, char *msg);
 void				single_philo(t_philo *philo_routine);
 int				stop_simulation(t_philo *philo_routine);
 int				ft_philo_routine(t_philo *philo_routine);
-void ft_usleep(unsigned int usec);
+void ft_usleep(int ms);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 15:48:57 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/20 20:56:24 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 14:03:49 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,29 @@ void	print_mentor(t_philo *philo, char *msg)
 	pthread_mutex_unlock(&philo->shared_data->mutex_print);
 }
 
+int	done_eating(int num, t_philo *philo)
+{
+	int i;
+	int total_meals;
+
+	total_meals = philo->shared_data->num_of_meals;
+	i = 0;
+	while(i < num)
+	{
+		if(philo->count_meals < total_meals)
+			return(0);
+		i++;
+	}
+	return(1);
+}
+
+
 static void	helper_monitor(int num, t_philo *philo)
 {
 	int		i;
-
+	int	total_meals;
+	
+	total_meals = philo->shared_data->num_of_meals;
 	while (1)
 	{
 		i = 0;
@@ -31,6 +50,8 @@ static void	helper_monitor(int num, t_philo *philo)
 			pthread_mutex_lock(&philo->shared_data->meal_mutex);
 			if (get_current_time() - philo[i].last_meal > philo[i].shared_data->time_to_die)
 			{
+				if(total_meals != -1 && done_eating(num, philo))
+					return;
 				pthread_mutex_unlock(&philo->shared_data->meal_mutex);
 				pthread_mutex_lock(&philo[i].shared_data->stop_mutex);
 				philo[i].shared_data->stop_simulation = 1;
@@ -41,7 +62,6 @@ static void	helper_monitor(int num, t_philo *philo)
 			pthread_mutex_unlock(&philo->shared_data->meal_mutex);
 			i++;
 		}
-		// ft_usleep(1000);
 	}
 }
 
