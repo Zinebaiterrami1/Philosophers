@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:38:46 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 21:11:53 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/07/21 21:35:55 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,5 @@ int					ft_philo_routine(t_philo *philo_routine);
 int					get_meal_count(t_philo *philo);
 void				ft_usleep(int ms);
 void				helper_main(t_philo *philo, int num);
-void 				stop_mutex(t_philo *philo, int i);
+void				stop_mutex(t_philo *philo, int i);
 #endif
