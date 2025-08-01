@@ -6,7 +6,7 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 15:20:28 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 20:56:18 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/08/01 09:34:11 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,8 @@ int	ft_philo_routine(t_philo *philo_routine)
 	return (0);
 }
 
-void destroy_mutex(t_philo *philo)
+void	destroy_mutex(t_philo *philo)
 {
-
 	pthread_mutex_destroy(&philo->shared_data->meal_mutex);
 	pthread_mutex_destroy(&philo->shared_data->stop_mutex);
 	pthread_mutex_destroy(&philo->shared_data->mutex_print);
