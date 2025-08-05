@@ -19,25 +19,17 @@ void	print_mentor(t_philo *philo, char *msg)
 	pthread_mutex_unlock(&philo->shared_data->mutex_print);
 }
 
-static int	check_death(t_philo *philo, int i)
+static void	check_death(t_philo *philo, int i)
 {
-	if (get_current_time() - philo[i].last_meal
-		> philo[i].shared_data->time_to_die)
-	{
-		pthread_mutex_unlock(&philo->shared_data->meal_mutex);
-		stop_mutex(philo, i);
-		print_mentor(&philo[i], "is died");
-		return (1);
-	}
-	return (0);
+	pthread_mutex_unlock(&philo->shared_data->meal_mutex);
+	stop_mutex(philo, i);
+	print_mentor(&philo[i], "is died");
+	return ;
 }
 
 static void	helper_monitor(int num, t_philo *philo)
 {
-	int	total_meals;
-	int	all_ate;
-	int	i;
-
+	int (total_meals), (all_ate), (i);
 	total_meals = philo->shared_data->num_of_meals;
 	while (1)
 	{
@@ -46,10 +38,13 @@ static void	helper_monitor(int num, t_philo *philo)
 		while (i < num)
 		{
 			pthread_mutex_lock(&philo->shared_data->meal_mutex);
-			if (check_death(philo, i))
-				return ;
 			if (total_meals != -1 && get_meal_count(&philo[i]) < total_meals)
 				all_ate = 0;
+			if (get_current_time() - philo[i].last_meal
+				> philo[i].shared_data->time_to_die)
+			{
+				check_death(philo, i);
+			}
 			pthread_mutex_unlock(&philo->shared_data->meal_mutex);
 			i++;
 		}

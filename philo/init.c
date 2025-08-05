@@ -32,6 +32,7 @@ static void	assign_forks(t_data *data, t_philo *philo, int i)
 	while (i < data->num_of_philo)
 	{
 		philo[i].philo_id = i + 1;
+		philo[i].count_meals = 0;
 		if (philo[i].philo_id % 2 == 0)
 		{
 			philo[i].first = i;
