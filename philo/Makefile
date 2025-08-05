@@ -1,6 +1,6 @@
 NAME = philo
 CC = cc 
-CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread -g --tool=helgrind
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread
 
 SOURCES = philo.c\
 			utils.c\

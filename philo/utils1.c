@@ -6,19 +6,23 @@
 /*   By: zait-err <zait-err@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 15:56:24 by zait-err          #+#    #+#             */
-/*   Updated: 2025/07/21 20:52:55 by zait-err         ###   ########.fr       */
+/*   Updated: 2025/08/05 15:26:13 by zait-err         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_usleep(int ms)
+void	ft_usleep(int ms, t_philo *philo)
 {
 	long	start_time;
 
 	start_time = get_current_time();
 	while (get_current_time() - start_time < ms)
+	{
+		if (stop_simulation(philo))
+			break ;
 		usleep(100);
+	}
 }
 
 long	*start_time(void)

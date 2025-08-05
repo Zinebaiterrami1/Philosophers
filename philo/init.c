@@ -89,3 +89,15 @@ void	print_philo(t_philo *philo, char *msg)
 	printf("%ld %d %s\n", get_current_time(), philo->philo_id, msg);
 	pthread_mutex_unlock(&philo->shared_data->mutex_print);
 }
+
+void	check_odd(t_philo *philo_routine)
+{
+	if ((philo_routine->shared_data->num_of_philo % 2 == 1)
+		&& philo_routine->shared_data->time_to_eat
+		> philo_routine->shared_data->time_to_sleep)
+	{
+		usleep((philo_routine->shared_data->time_to_eat
+				- philo_routine->shared_data->time_to_sleep) * 1000);
+		usleep(500);
+	}
+}
