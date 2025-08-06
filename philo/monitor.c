@@ -24,7 +24,7 @@ static void	check_death(t_philo *philo, int i)
 	pthread_mutex_unlock(&philo->shared_data->meal_mutex);
 	stop_mutex(philo, i);
 	print_mentor(&philo[i], "is died");
-	return ;
+	// return ;
 }
 
 static void	helper_monitor(int num, t_philo *philo)
@@ -44,6 +44,7 @@ static void	helper_monitor(int num, t_philo *philo)
 				> philo[i].shared_data->time_to_die)
 			{
 				check_death(philo, i);
+				return ;
 			}
 			pthread_mutex_unlock(&philo->shared_data->meal_mutex);
 			i++;
